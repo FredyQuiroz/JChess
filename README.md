@@ -45,6 +45,8 @@ Open `JChess.exe` from `src/JChess` so the program can locate its pictures and m
 
 For a short console example, open Prueba.exe, enter 3 3 as the starting square, enter 1 for one move and press Enter to see the grid.
 
+At the first prompt type `3 3`, then type `2` for the search depth. Press Enter after each grid. The first grid has `K` at the starting square and eight `1` marks for one move. The second shows squares reachable within two moves.
+
 ### Project structure
 
 `src/JChess/` contains the desktop selector, 2D renderer, piece movement and original graphics. `src/Prueba/` contains the console exercise. Each directory retains the original `.vcproj` and `.legacy.sln` next to its converted solution.
@@ -59,7 +61,7 @@ Build both Win32 solutions and try a position near the centre and near a board e
 
 ### History
 
-The source snapshot comes from `jchess.rar`, whose project files date from 20 March 2005. The date uses 12:00 UTC as a representative time. The 2026 reconstruction converts the two Win32 solutions and includes the exact DirectX sample files and documents the separately supplied SDK.
+The source snapshot comes from `jchess.rar`, whose project files date from 20 March 2005. The date uses 12:00 UTC as a representative time. The 2026 reconstruction converts the two Win32 solutions and includes the exact DirectX sample files and documents the separately supplied SDK. The first documentation update shows how to reproduce the knight exercise from the centre.
 
 ### License
 
@@ -111,6 +113,8 @@ Abre `JChess.exe` desde `src/JChess` para que el programa encuentre las imágene
 
 Para un ejemplo en consola, abre Prueba.exe, escribe 3 3 como posición inicial, escribe 1 para un movimiento y pulsa Enter para ver el tablero.
 
+En la primera pregunta escribe `3 3`. Después escribe `2` para la profundidad de búsqueda. Pulsa Enter después de cada tablero. El primero muestra `K` en la posición inicial y ocho marcas `1` para un movimiento. El segundo muestra las casillas alcanzables en hasta dos movimientos.
+
 ### Estructura del proyecto
 
 `src/JChess/` contiene el selector, el visor 2D, los movimientos de las piezas y sus recursos propios. `src/Prueba/` contiene el ejercicio de consola. Cada carpeta conserva el `.vcproj` y `.legacy.sln` originales junto a la solución convertida.
@@ -125,7 +129,7 @@ Compila las dos soluciones Win32 y prueba una posición cerca del centro y otra 
 
 ### Historial
 
-La edición proviene de `jchess.rar`, cuyos archivos de proyecto están fechados el 20 de marzo de 2005. Se usa la hora de referencia de 12:00 UTC. La reconstrucción de 2026 convierte las dos soluciones Win32 y incluye los ejemplos DirectX exactos y documenta el SDK que se obtiene por separado.
+La edición proviene de `jchess.rar`, cuyos archivos de proyecto están fechados el 20 de marzo de 2005. Se usa la hora de referencia de 12:00 UTC. La reconstrucción de 2026 convierte las dos soluciones Win32 y incluye los ejemplos DirectX exactos y documenta el SDK que se obtiene por separado. La primera revisión documental explica cómo reproducir el ejercicio del caballo desde el centro.
 
 ### Licencia
 
