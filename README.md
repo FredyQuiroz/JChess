@@ -8,7 +8,7 @@ Ejercicio de gráficos de Windows que representa un tablero de ajedrez en tres d
 
 ### Esta revisión
 
-**2005-03-20 · Representar un tablero de ajedrez en Direct3D.** Recupera el código de la escena y las representaciones 2D y 3D del tablero. Se conserva el motor de dibujo para seguir cómo se organizan los objetos antes de mostrarlos.
+**2026-11-17 · Explicar cómo preparar una prueba del tablero 3D.** Identifica la solución que declara las dependencias de Direct3D y explica que el tablero espera recursos gráficos propios. Esto ayuda a elegir un SDK compatible y preparar una prueba visual.
 
 ### Cómo explorar el código
 
@@ -25,7 +25,7 @@ A Windows graphics exercise that renders a three-dimensional chessboard. The sou
 
 ### This revision
 
-**2005-03-20 · Render a chessboard in Direct3D.** Recover the scene code and the 2D and 3D board representations. Keep the rendering engine so readers can follow how objects are organized before they are displayed.
+**2026-11-17 · Explain how to prepare a 3D board test.** Identify the solution that declares the Direct3D dependencies and explain which graphics the board expects. This helps readers pick a compatible SDK and prepare a visual test.
 
 ### How to explore the source
 
