@@ -63,6 +63,29 @@ Build both Win32 solutions and try a position near the centre and near a board e
 
 The source snapshot comes from `jchess.rar`, whose project files date from 20 March 2005. The date uses 12:00 UTC as a representative time. The 2026 reconstruction converts the two Win32 solutions and includes the exact DirectX sample files and documents the separately supplied SDK. The first documentation update shows how to reproduce the knight exercise from the centre.
 
+### Verification
+
+**19 November 2026.** Windows 11 Pro build 26300, Visual Studio Community 2026 18.11.4, MSBuild 18.11.1.51303, MSVC 14.51.36263 v145 and SDK 10.0.26100.0. Both MSBuild commands in [Getting started](#getting-started) returned 0 in each of the three copies. `Prueba.exe` ran with input `3 3` and depth `2`, printed the two grids and returned 0. The first grid contains the eight expected knight moves.
+
+```text
+........
+..1.1...
+.1...1..
+...K....
+.1...1..
+..1.1...
+........
+........
+```
+
+`JChess.exe` opened the graphics selector. Native DirectDraw returned 0x80004001. With DDrawCompat the renderer reached a 16-bit surface. The 3D mode issued Direct3D drawing calls and showed the camera instructions in the apitrace recording. Windows was locked and isolated attempts with Wine 6.0.3 and 10.0 stopped with an execution page fault. The Windows tests stopped the viewer after its normal close did not complete. The full graphical board remains unverified.
+
+To run the captured example from the repository root, use `cmd /c "src\Prueba\bin\Release\Prueba.exe < examples\ejemplo.txt"`.
+
+![An image of the recorded output shows both console grids and exit code 0.](docs/media/console-output.png)
+
+![The actual startup window offers Direct3D and DirectDraw modes](docs/media/mode-selector.png)
+
 ### License
 
 The [MIT license](LICENSE) applies to the project’s own code and documentation. The [third-party notices](THIRD-PARTY-NOTICES.md) describe the external materials.
@@ -130,6 +153,29 @@ Compila las dos soluciones Win32 y prueba una posición cerca del centro y otra 
 ### Historial
 
 La edición proviene de `jchess.rar`, cuyos archivos de proyecto están fechados el 20 de marzo de 2005. Se usa la hora de referencia de 12:00 UTC. La reconstrucción de 2026 convierte las dos soluciones Win32 y incluye los ejemplos DirectX exactos y documenta el SDK que se obtiene por separado. La primera revisión documental explica cómo reproducir el ejercicio del caballo desde el centro.
+
+### Verificación
+
+**19 de noviembre de 2026.** Windows 11 Pro compilación 26300, Visual Studio Community 2026 18.11.4, MSBuild 18.11.1.51303, MSVC 14.51.36263 v145 y SDK 10.0.26100.0. Los dos comandos de MSBuild de [Cómo empezar](#cómo-empezar) devolvieron 0 en las tres copias. `Prueba.exe` recibió `3 3` y profundidad `2`, imprimió dos tableros y devolvió 0. El primer tablero contiene los ocho saltos esperados.
+
+```text
+........
+..1.1...
+.1...1..
+...K....
+.1...1..
+..1.1...
+........
+........
+```
+
+`JChess.exe` abrió el selector gráfico. DirectDraw devolvió 0x80004001 en modo nativo. Con DDrawCompat, el programa llegó a una superficie de 16 bits. El modo 3D emitió llamadas de dibujo y mostró las instrucciones de cámara en la traza de apitrace. Windows estaba bloqueado y las pruebas aisladas con Wine 6.0.3 y 10.0 se detuvieron por el mismo fallo de ejecución de memoria. Las pruebas de Windows terminaron el visor cuando no completó su cierre normal. Queda por verificar el tablero completo.
+
+Para repetir el ejemplo de la captura desde la raíz, usa `cmd /c "src\Prueba\bin\Release\Prueba.exe < examples\ejemplo.txt"`.
+
+![Imagen de la salida registrada con ambos tableros y código de salida 0.](docs/media/console-output.png)
+
+![La ventana real de arranque ofrece los modos Direct3D y DirectDraw](docs/media/mode-selector.png)
 
 ### Licencia
 
