@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 
 # include "D2D.h"
 # include "Fichas.h"
@@ -16,6 +17,12 @@ class JChess2D : public CD2D
 {
 
 private:
+    bool m_windowed;
+    std::vector<WORD> m_windowPixels;
+    std::vector<ScreenLines> m_windowRows;
+    void PaintWindowBuffer(HDC dc);
+    BOOL StartWindowBuffer();
+
 	
 	//Estas estructuras de datos son necesarias para inicializar
 	//y utilizar Direct-Draw:

@@ -14,7 +14,7 @@ JChess lets a learner place chess pieces on a board and investigate where a knig
 
 ### Features
 
-- Opens a selector for DirectDraw (2D) or Direct3D (3D).
+- Opens a selector for a 2D board or a Direct3D 3D view.
 - Loads piece sprites and models for the board.
 - Displays the knight’s reachable squares at different depths.
 - Includes a console exercise with an eight-by-eight text board and a chosen starting square.
@@ -23,7 +23,7 @@ JChess lets a learner place chess pieces on a board and investigate where a knig
 
 - Windows 11 Pro build 26300 was used for this reconstruction. Build Win32 with Visual Studio Community 2026 18.11.4, MSVC 14.51.36263 (v145, toolset directory 14.51.36231), and Windows SDK 10.0.26100.0. The console exercise uses the C++ runtime supplied by the compiler.
 - The desktop build uses the original Microsoft DirectX 9.0b SDK and the components listed in [Third-party notices](THIRD-PARTY-NOTICES.md). Its x86 static graphics library predates the SafeSEH linker tables. The converted project enables ASLR and DEP.
-- The 2D mode uses DirectDraw with 16-bit colour. [DDrawCompat 0.7.2](https://github.com/narzoul/DDrawCompat/releases/tag/v0.7.2) can be supplied beside `JChess.exe` for a local compatibility test.
+- The 2D mode opens in a GDI window by default. The optional fullscreen mode uses DirectDraw with 16-bit colour. [DDrawCompat 0.7.2](https://github.com/narzoul/DDrawCompat/releases/tag/v0.7.2) can be supplied beside `JChess.exe` for a local compatibility test.
 
 ### Getting started
 
@@ -63,28 +63,31 @@ Build both Win32 solutions and try a position near the centre and near a board e
 
 The source snapshot comes from `jchess.rar`, whose project files date from 20 March 2005. The date uses 12:00 UTC as a representative time. The 2026 reconstruction converts the two Win32 solutions and includes the exact DirectX sample files and documents the separately supplied SDK. The first documentation update shows how to reproduce the knight exercise from the centre.
 
+### 2D in a window
+
+The 2026 revision opens the 2D board in a normal window using the original drawing code. Choose **2D** and drag a piece from the palette to the board. Set `JCHESS_FULLSCREEN_2D=1` to request the original fullscreen renderer on compatible hardware.
+
+The local test moved a knight onto the board and closed JChess with exit code 0. The earlier commits still require a display setup that supports their fullscreen DirectDraw mode.
+
+![A knight placed on the windowed 2D board](docs/media/2d-window.png)
+
+![Dragging the knight from the palette to the board](docs/media/2d-placement.gif)
+
 ### Verification
 
-**19 November 2026.** Windows 11 Pro build 26300, Visual Studio Community 2026 18.11.4, MSBuild 18.11.1.51303, MSVC 14.51.36263 v145 and SDK 10.0.26100.0. Both MSBuild commands in [Getting started](#getting-started) returned 0 in each of the three copies. `Prueba.exe` ran with input `3 3` and depth `2`, printed the two grids and returned 0. The first grid contains the eight expected knight moves.
+On November 19, 2026, MSBuild 18.11.1.51303 with v145 built both Win32 solutions in four separate cuts. The console reproduced the eight knight moves. The 3D viewer displayed its board and moved the camera with optional effects disabled. The new windowed 2D viewer moved a knight onto the board and closed with exit code 0. The three previous cuts still failed their original fullscreen 2D path in this environment.
 
-```text
-........
-..1.1...
-.1...1..
-...K....
-.1...1..
-..1.1...
-........
-........
+Run the console test from the repository root.
+
+```powershell
+Get-Content .\examples\ejemplo.txt | .\src\Prueba\bin\Release\Prueba.exe
 ```
 
-`JChess.exe` opened the graphics selector. Native DirectDraw returned 0x80004001. With DDrawCompat the renderer reached a 16-bit surface. The 3D mode issued Direct3D drawing calls and showed the camera instructions in the apitrace recording. Windows was locked and isolated attempts with Wine 6.0.3 and 10.0 stopped with an execution page fault. The Windows tests stopped the viewer after its normal close did not complete. The full graphical board remains unverified.
+![The console lists the squares a knight can reach](docs/media/console-output.png)
 
-To run the captured example from the repository root, use `cmd /c "src\Prueba\bin\Release\Prueba.exe < examples\ejemplo.txt"`.
+![The original 3D board before moving the camera](docs/media/3d-board.png)
 
-![An image of the recorded output shows both console grids and exit code 0.](docs/media/console-output.png)
-
-![The actual startup window offers Direct3D and DirectDraw modes](docs/media/mode-selector.png)
+![Changing the camera in the 3D viewer](docs/media/3d-camera.gif)
 
 ### License
 
@@ -105,7 +108,7 @@ JChess permite colocar piezas de ajedrez en un tablero y explorar a dónde puede
 
 ### Funciones
 
-- Abre un selector de DirectDraw (2D) o Direct3D (3D).
+- Abre un selector para un tablero 2D o una vista 3D con Direct3D.
 - Carga imágenes y modelos de las piezas.
 - Muestra las casillas que alcanza un caballo a distintas profundidades.
 - Incluye un ejercicio de consola con tablero de ocho por ocho y coordenadas de inicio.
@@ -114,7 +117,7 @@ JChess permite colocar piezas de ajedrez en un tablero y explorar a dónde puede
 
 - La reconstrucción usó Windows 11 Pro compilación 26300. Compila para Win32 con Visual Studio Community 2026 18.11.4, MSVC 14.51.36263 (v145, directorio de herramientas 14.51.36231) y SDK de Windows 10.0.26100.0. La consola usa el entorno de ejecución de C++ del compilador.
 - La compilación de escritorio usa el SDK original Microsoft DirectX 9.0b y los componentes de [Avisos de terceros](THIRD-PARTY-NOTICES.md). La biblioteca estática x86 es anterior a las tablas SafeSEH del enlazador. El proyecto convertido habilita ASLR y DEP.
-- El modo 2D usa DirectDraw con color de 16 bits. Puedes colocar [DDrawCompat 0.7.2](https://github.com/narzoul/DDrawCompat/releases/tag/v0.7.2) junto a `JChess.exe` para una prueba local.
+- El modo 2D abre en una ventana GDI de forma predeterminada. El modo opcional a pantalla completa usa DirectDraw con color de 16 bits. Puedes colocar [DDrawCompat 0.7.2](https://github.com/narzoul/DDrawCompat/releases/tag/v0.7.2) junto a `JChess.exe` para una prueba local.
 
 ### Cómo empezar
 
@@ -154,28 +157,31 @@ Compila las dos soluciones Win32 y prueba una posición cerca del centro y otra 
 
 La edición proviene de `jchess.rar`, cuyos archivos de proyecto están fechados el 20 de marzo de 2005. Se usa la hora de referencia de 12:00 UTC. La reconstrucción de 2026 convierte las dos soluciones Win32 y incluye los ejemplos DirectX exactos y documenta el SDK que se obtiene por separado. La primera revisión documental explica cómo reproducir el ejercicio del caballo desde el centro.
 
+### 2D en ventana
+
+La revisión de 2026 abre el tablero 2D en una ventana normal y conserva el dibujo original. Elige **2D** y arrastra una ficha desde la paleta hasta el tablero. Define `JCHESS_FULLSCREEN_2D=1` para pedir el modo original a pantalla completa en un equipo compatible.
+
+La prueba local movió un caballo al tablero. JChess se cerró con código 0. Los commits anteriores requieren una configuración gráfica compatible con DirectDraw a pantalla completa.
+
+![Caballo colocado en el tablero 2D en ventana](docs/media/2d-window.png)
+
+![Arrastre del caballo desde la paleta hacia el tablero](docs/media/2d-placement.gif)
+
 ### Verificación
 
-**19 de noviembre de 2026.** Windows 11 Pro compilación 26300, Visual Studio Community 2026 18.11.4, MSBuild 18.11.1.51303, MSVC 14.51.36263 v145 y SDK 10.0.26100.0. Los dos comandos de MSBuild de [Cómo empezar](#cómo-empezar) devolvieron 0 en las tres copias. `Prueba.exe` recibió `3 3` y profundidad `2`, imprimió dos tableros y devolvió 0. El primer tablero contiene los ocho saltos esperados.
+El 19 de noviembre de 2026, MSBuild 18.11.1.51303 con v145 compiló las dos soluciones Win32 en cuatro cortes. La consola reprodujo ocho saltos del caballo. El visor 3D mostró el tablero y movió la cámara con los efectos opcionales desactivados. En el nuevo visor 2D en ventana se movió un caballo y el programa cerró con código 0. El modo 2D original a pantalla completa falló en los tres cortes anteriores en este entorno.
 
-```text
-........
-..1.1...
-.1...1..
-...K....
-.1...1..
-..1.1...
-........
-........
+Ejecuta la prueba de consola desde la raíz del repositorio.
+
+```powershell
+Get-Content .\examples\ejemplo.txt | .\src\Prueba\bin\Release\Prueba.exe
 ```
 
-`JChess.exe` abrió el selector gráfico. DirectDraw devolvió 0x80004001 en modo nativo. Con DDrawCompat, el programa llegó a una superficie de 16 bits. El modo 3D emitió llamadas de dibujo y mostró las instrucciones de cámara en la traza de apitrace. Windows estaba bloqueado y las pruebas aisladas con Wine 6.0.3 y 10.0 se detuvieron por el mismo fallo de ejecución de memoria. Las pruebas de Windows terminaron el visor cuando no completó su cierre normal. Queda por verificar el tablero completo.
+![La consola muestra las casillas alcanzables por un caballo](docs/media/console-output.png)
 
-Para repetir el ejemplo de la captura desde la raíz, usa `cmd /c "src\Prueba\bin\Release\Prueba.exe < examples\ejemplo.txt"`.
+![Tablero 3D antes de mover la cámara](docs/media/3d-board.png)
 
-![Imagen de la salida registrada con ambos tableros y código de salida 0.](docs/media/console-output.png)
-
-![La ventana real de arranque ofrece los modos Direct3D y DirectDraw](docs/media/mode-selector.png)
+![Cambio de cámara en el visor 3D](docs/media/3d-camera.gif)
 
 ### Licencia
 

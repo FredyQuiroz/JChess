@@ -17,7 +17,12 @@ LRESULT CALLBACK WndProc2D( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 }
 
 JChess2D::JChess2D(void)
+    : m_windowed(false), lpDD(NULL), bActive(FALSE)
 {
+    lpDDSPrimary = NULL;
+    lpDDSBack = NULL;
+    pantallafisica.Lines = NULL;
+
 	g_pD3DApp = this;
 	m_nPosTablero= -1;
 	m_bCaballo= m_bEliminar= m_bDrag= false;
@@ -54,7 +59,18 @@ void JChess2D::GameInit()
 {
  //Crea una lista de yres punteros que contendran el principio
  //de cada una de las lineas que forman la pantalla fisica.
- NewScreenWin(pantallafisica,xres,yres);
+ if (m_windowed)
+ {
+   m_windowPixels.resize(static_cast<size_t>(xres) * yres);
+   m_windowRows.resize(yres);
+   for (DWORD row = 0; row < yres; ++row)
+     m_windowRows[row] = &m_windowPixels[static_cast<size_t>(row) * xres];
+   pantallafisica.AX = static_cast<WORD>(xres);
+   pantallafisica.AY = static_cast<WORD>(yres);
+   pantallafisica.Lines = m_windowRows.data();
+ }
+ else
+   NewScreenWin(pantallafisica,xres,yres);
 
  //La pantalla en uso sera la pantalla fisica
  SetActiveScreen(pantallafisica);
@@ -229,7 +245,8 @@ void JChess2D::game(void)
 {
 
   //Obtiene el puntero a la pantalla
-  PrepareRealScreen();
+  if (!m_windowed)
+    PrepareRealScreen();
 	
   int i;
   //La primera pantalla se pinta siempre en unas cooordenadas fijas,
@@ -267,7 +284,18 @@ void JChess2D::game(void)
   // renderizamos el cursor
   ScreenCopyClip( m_pCursor, pantallafisica, 0 ,0, 30,30, m_mouseX, m_mouseY, TRANSPARENTE);
   //Actualiza la pantalla, copiando el BackSurface sobre el FrontSurface
-  UpdateRealScreen();
+  if (m_windowed)
+  {
+    HDC dc = GetDC(hwnd);
+    if (dc)
+    {
+      PaintWindowBuffer(dc);
+      ReleaseDC(hwnd, dc);
+    }
+    Sleep(12);
+  }
+  else
+    UpdateRealScreen();
 
 }
 
@@ -312,6 +340,24 @@ LRESULT JChess2D::MsgProc( HWND hWnd, UINT message,
     //Analiza los mensajes
     switch( message )
     {
+    case WM_PAINT:
+      if (m_windowed)
+      {
+        PAINTSTRUCT paint = {};
+        HDC dc = BeginPaint(hWnd, &paint);
+        PaintWindowBuffer(dc);
+        EndPaint(hWnd, &paint);
+        return 0;
+      }
+      break;
+    case WM_PRINTCLIENT:
+      if (m_windowed)
+      {
+        PaintWindowBuffer(reinterpret_cast<HDC>(wParam));
+        return 0;
+      }
+      break;
+
     //Si se activa la aplicacion, bACtiva pasa a ser verdadero.
     case WM_ACTIVATEAPP:
         bActive = TRUE;
@@ -532,8 +578,6 @@ BOOL JChess2D::doInit( HINSTANCE hInstance, int nCmdShow )
     DDSCAPS             ddscaps;
     HRESULT             ddrval;
     
-    //Buffer de caracteres.
-    char                buf[256];
 
 
     //Define las caracteristicas de la ventana de la aplicacion
@@ -576,6 +620,12 @@ BOOL JChess2D::doInit( HINSTANCE hInstance, int nCmdShow )
     ShowWindow( hwnd, nCmdShow );
     UpdateWindow( hwnd );
 
+
+    char fullscreen[2] = {};
+    const bool classic = GetEnvironmentVariableA("JCHESS_FULLSCREEN_2D", fullscreen, sizeof(fullscreen)) == 1 &&
+                         fullscreen[0] == '1';
+    if (!classic)
+        return StartWindowBuffer();
 
     //Aqui se crea el objeto Direct-Draw
     ddrval = DirectDrawCreate( NULL, &lpDD, NULL );
@@ -638,13 +688,50 @@ BOOL JChess2D::doInit( HINSTANCE hInstance, int nCmdShow )
         }
     }
 
-    //En caso de que alguna de las inicializaciones haya fallado
-    //se devuelve un error y se retorna FALSE.
-    wsprintf(buf, "Fallo al inicializar Direct-Draw (%08lx)\n", ddrval );
-    MessageBox( hwnd, buf, "ERROR", MB_OK );
+    return StartWindowBuffer();
+}
+
+BOOL JChess2D::StartWindowBuffer()
+{
+    if (lpDDSBack)
+    {
+        lpDDSBack->Release();
+        lpDDSBack = NULL;
+    }
+    if (lpDD)
+        lpDD->RestoreDisplayMode();
     finiObjects();
-    DestroyWindow( hwnd );
-    return FALSE;
+
+    m_windowed = true;
+    bitsrojo = 5;
+    bitsverde = 6;
+    bitsazul = 5;
+    const DWORD style = WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
+    RECT size = {0, 0, static_cast<LONG>(xres), static_cast<LONG>(yres)};
+    AdjustWindowRect(&size, style, FALSE);
+    SetWindowLongPtr(hwnd, GWL_STYLE, style | WS_VISIBLE);
+    SetWindowPos(hwnd, HWND_NOTOPMOST, 48, 48, size.right - size.left, size.bottom - size.top,
+                 SWP_FRAMECHANGED | SWP_SHOWWINDOW);
+    GameInit();
+    bActive = TRUE;
+    return TRUE;
+}
+
+void JChess2D::PaintWindowBuffer(HDC dc)
+{
+    if (m_windowPixels.empty())
+        return;
+
+    struct {
+        BITMAPINFOHEADER header;
+        DWORD colors[3];
+    } format = {
+        {sizeof(BITMAPINFOHEADER), static_cast<LONG>(xres), -static_cast<LONG>(yres),
+         1, 16, BI_BITFIELDS, 0, 0, 0, 0, 0},
+        {0xf800, 0x07e0, 0x001f}
+    };
+    SetDIBitsToDevice(dc, 0, 0, xres, yres, 0, 0, 0, yres, m_windowPixels.data(),
+                      reinterpret_cast<BITMAPINFO*>(&format), DIB_RGB_COLORS);
 }
 
 // el main de la aplicacion
