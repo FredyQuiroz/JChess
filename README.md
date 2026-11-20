@@ -75,6 +75,8 @@ The local test moved a knight onto the board and closed JChess with exit code 0.
 
 ### Verification
 
+The historical fullscreen DirectDraw mode requires a desktop and video driver that provide exclusive 16-bit display mode. That environment was unavailable. Each of the first three revisions passed the console example and its 3D camera test. The separate 2026 revision opens the 2D board in GDI, where dragging a knight succeeds. Fullscreen DirectDraw remains selectable and unverified on this machine.
+
 On November 19, 2026, MSBuild 18.11.1.51303 with v145 built both Win32 solutions in four separate cuts. The console reproduced the eight knight moves. The 3D viewer displayed its board and moved the camera with optional effects disabled. The new windowed 2D viewer moved a knight onto the board and closed with exit code 0. The three previous cuts still failed their original fullscreen 2D path in this environment.
 
 Run the console test from the repository root.
@@ -168,6 +170,8 @@ La prueba local movió un caballo al tablero. JChess se cerró con código 0. Lo
 ![Arrastre del caballo desde la paleta hacia el tablero](docs/media/2d-placement.gif)
 
 ### Verificación
+
+El modo histórico DirectDraw a pantalla completa requiere un escritorio y un controlador de vídeo compatibles con el modo exclusivo de 16 bits. Ese entorno no estaba disponible. Los tres primeros cortes pasaron el ejemplo de consola y la prueba de cámara 3D. La revisión separada de 2026 abre el tablero 2D con GDI y permite arrastrar un caballo. DirectDraw a pantalla completa sigue disponible como opción y queda sin verificar en este equipo.
 
 El 19 de noviembre de 2026, MSBuild 18.11.1.51303 con v145 compiló las dos soluciones Win32 en cuatro cortes. La consola reprodujo ocho saltos del caballo. El visor 3D mostró el tablero y movió la cámara con los efectos opcionales desactivados. En el nuevo visor 2D en ventana se movió un caballo y el programa cerró con código 0. El modo 2D original a pantalla completa falló en los tres cortes anteriores en este entorno.
 
